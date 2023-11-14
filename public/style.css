@@ -1,0 +1,70 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    background-color: #111;
+    color: #FFFFFF;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+
+main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#ranking {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.GRANDMASTER {
+    color: red;
+}
+
+.EMERALD {
+    color: limegreen;
+}
+
+.MASTER {
+    color: palevioletred;
+}
+
+.DIAMOND {
+    color: cyan;
+}
+
+.PLATINUM {
+    color: cadetblue;
+}
+
+.CHALLENGER {
+    color: burlywood;
+}
+
+.GOLD {
+    color: gold;
+}
+
+.IRON {
+    color: darkgray;
+}
+
+.SILVER {
+    color: silver;
+}
+
+.rank, .tier {
+    font-weight: 700;
+}
