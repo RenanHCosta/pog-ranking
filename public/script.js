@@ -1,5 +1,6 @@
 
-const BASE_API_URL = 'https://pog-ranking.onrender.com';
+const BASE_API_URL = 'https://pog-ranking.onrender.com'; // PRODUCTION URL
+// const BASE_API_URL = 'http://localhost:3000'; // LOCAL URL
 const SUMMONER_API = 'summoner';
 const LEAGUE_API = 'summoner/league'
 
@@ -18,7 +19,12 @@ const players = [
     "Nekozumi",
     "Arzok",
     "eigamen",
-    "laimb meu zovo"
+    "laimb meu zovo",
+    "Srpbl",
+    "Brutos MAX",
+    "always apleasure",
+    "Nenemz",
+    "rasks"
 ];
 
 async function fetchSummonerByName(summonerName) {
@@ -64,7 +70,7 @@ function renderRanking(ranking) {
         const soloQueueData = summoner.leagueData.find(data => data.queueType === 'RANKED_SOLO_5x5');
         if (soloQueueData) return soloQueueData;
     }).filter(Boolean).sort(comparePlayers);
-
+    
     orderedPlayers.forEach((summoner) => {
         html += `
             <div class="summoner">
@@ -80,7 +86,7 @@ function renderRanking(ranking) {
         `;
     })
 
-    rankingWrapper.insertAdjacentHTML("afterbegin", html);
+    rankingWrapper.innerHTML = html;
 }
 
 getSummonersLeagues(players)

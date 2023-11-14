@@ -12,6 +12,8 @@ const RIOT_BASE_API_URL = 'https://br1.api.riotgames.com';
 const SUMMONER_API = 'lol/summoner/v4/summoners/by-name';
 const LEAGUE_API = 'lol/league/v4/entries/by-summoner';
 
+const leaguesCache = [];
+
 // Will most likely be deprecated in the future
 async function fetchSummonerByName(summonerName) {
     const response = await fetch(`${RIOT_BASE_API_URL}/${SUMMONER_API}/${summonerName}`, {
@@ -49,8 +51,18 @@ server.get("/summoner/league/:name", async (req, resp) => {
     const summonerName = req.params.name;
 
     try {
+        const perCache = leaguesCache.find((league) => league[0].summonerName === summonerName);
+
+        if (perCache) {
+            return resp.json(perCache);
+        };
+
         const { id } = await fetchSummonerByName(summonerName);
         const leagues = await fetchSummonerLeagues(id);
+
+        if (!leagues.status) {
+            leaguesCache.push(leagues);
+        }
 
         resp.json(leagues);
     } catch (error) {
