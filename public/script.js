@@ -1,5 +1,5 @@
 
-const BASE_API_URL = 'http://localhost:3000';
+const BASE_API_URL = 'https://pog-ranking.onrender.com/';
 const SUMMONER_API = 'summoner';
 const LEAGUE_API = 'summoner/league'
 
