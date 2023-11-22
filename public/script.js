@@ -31,7 +31,7 @@ const players = [
   },
   {
     name: "SrSSS",
-    img: "./srsss.png",
+    img: "./savio.jpg",
   },
   {
     name: "Dreosh",
@@ -43,7 +43,7 @@ const players = [
   },
   {
     name: "lele01",
-    img: "./lele01.png",
+    img: "./lele01.jpg",
   },
   {
     name: "Nekozumi",
@@ -59,7 +59,7 @@ const players = [
   },
   {
     name: "laimb meu zovo",
-    img: "",
+    img: "patrick.jpg",
   },
   {
     name: "Srpbl",
@@ -80,9 +80,7 @@ const players = [
 ];
 
 async function fetchSummonerByName(summonerName) {
-  const response = await fetch(
-    `/${SUMMONER_API}/${summonerName}`
-  );
+  const response = await fetch(`/${SUMMONER_API}/${summonerName}`);
   const data = await response.json();
   return data;
 }
@@ -141,9 +139,14 @@ function renderRanking(ranking) {
     const player = players.find(
       (player) => player.name === summoner.summonerName
     );
-    const playerImg = player && player.img ? player.img : "indoali.jpg";
 
     const negativeClass = summoner.wins < summoner.losses ? "on" : "off";
+
+    let playerImg = player && player.img ? player.img : "indoali.jpg";
+
+    if (player.name === "Neyans" && negativeClass === "on") {
+      playerImg = "neyanscrime.png";
+    }
 
     html += `
             <div class="summoner">
