@@ -1,5 +1,3 @@
-const BASE_API_URL = "https://pog-ranking.onrender.com"; // PRODUCTION URL
-// const BASE_API_URL = 'http://localhost:3000'; // LOCAL URL
 const SUMMONER_API = "summoner";
 const LEAGUE_API = "summoner/league";
 
@@ -83,14 +81,14 @@ const players = [
 
 async function fetchSummonerByName(summonerName) {
   const response = await fetch(
-    `${BASE_API_URL}/${SUMMONER_API}/${summonerName}`
+    `/${SUMMONER_API}/${summonerName}`
   );
   const data = await response.json();
   return data;
 }
 
 async function fetchSummonerLeagues(summonerName) {
-  const response = await fetch(`${BASE_API_URL}/${LEAGUE_API}/${summonerName}`);
+  const response = await fetch(`/${LEAGUE_API}/${summonerName}`);
   const data = await response.json();
   return data;
 }
@@ -104,6 +102,12 @@ async function getSummonersLeagues(summoners) {
   const summonersWithLeagues = await Promise.all(fetchPromises);
 
   return summonersWithLeagues;
+}
+
+async function fetchClearCache() {
+  const response = await fetch(`/clear-cache`);
+  const data = await response.json();
+  return data;
 }
 
 function comparePlayers(playerA, playerB) {
@@ -166,6 +170,16 @@ function renderRanking(ranking) {
 getSummonersLeagues(players)
   .then((result) => {
     renderRanking(result);
+
+    const updateBtn = document.getElementById("btn-update");
+
+    updateBtn.addEventListener("click", async () => {
+      const tryClear = await fetchClearCache();
+
+      if (tryClear.status === 200) {
+        window.location.reload();
+      }
+    });
   })
   .catch((error) => {
     console.error("Erro geral:", error);
