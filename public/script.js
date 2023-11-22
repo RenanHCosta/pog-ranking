@@ -59,7 +59,7 @@ const players = [
   },
   {
     name: "laimb meu zovo",
-    img: "patrick.jpg",
+    img: "patric.jpg",
   },
   {
     name: "Srpbl",
@@ -144,7 +144,7 @@ function renderRanking(ranking) {
 
     let playerImg = player && player.img ? player.img : "indoali.jpg";
 
-    if (player.name === "Neyans" && negativeClass === "on") {
+    if (player?.name === "Neyans" && negativeClass === "on") {
       playerImg = "neyanscrime.png";
     }
 
