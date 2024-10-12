@@ -92,6 +92,11 @@ const players = [
     tag: "BR1",
     img: "",
   },
+  {
+    name: "Raizzeni",
+    tag: "Toth",
+    img: "./gomes.png",
+  },
 ];
 
 async function fetchSummonerByName(summonerName, tag) {
@@ -128,7 +133,14 @@ function comparePlayers(playerA, playerB) {
     TIER_ORDER.indexOf(playerB.tier) - TIER_ORDER.indexOf(playerA.tier);
 
   if (tierComparison === 0) {
-    return RANK_ORDER.indexOf(playerB.rank) - RANK_ORDER.indexOf(playerA.rank);
+    const rankComparison =
+      RANK_ORDER.indexOf(playerB.rank) - RANK_ORDER.indexOf(playerA.rank);
+
+    if (rankComparison === 0) {
+      return playerB.leaguePoints - playerA.leaguePoints;
+    }
+
+    return rankComparison;
   }
 
   return tierComparison;
