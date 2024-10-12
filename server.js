@@ -27,7 +27,6 @@ async function fetchSummonerByNameAndTag(summonerName, tag) {
   );
 
   const data = await response.json();
-  console.log(data);
   return data;
 }
 
@@ -85,7 +84,7 @@ server.get("/summoner/league/:name/:tag", async (req, resp) => {
 
   try {
     const perCache = leaguesCache.find(
-      (league) => league[0].summonerName === summonerName
+      (league) => league[0]?.summonerName === summonerName
     );
 
     if (perCache) {

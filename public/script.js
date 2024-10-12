@@ -19,81 +19,96 @@ const RANK_ORDER = ["IV", "III", "II", "I"];
 const players = [
   {
     name: "Smurf do Nenem",
+    tag: "BR1",
     img: "./nenemz.png",
   },
   {
     name: "Kaikan",
+    tag: "BR1",
     img: "./kaikan.png",
   },
   {
     name: "Neyans",
+    tag: "001",
     img: "./neyans.png",
   },
   {
     name: "SrSSS",
+    tag: "BR1",
     img: "./savio.jpg",
   },
   {
     name: "Dreosh",
+    tag: "BR1",
     img: "./dreosh.png",
   },
   {
     name: "Ieyasu Sawada",
+    tag: "BR1",
     img: "./gomes.png",
   },
   {
-    name: "lele01",
+    name: "Kenai",
+    tag: "duo",
     img: "./lele01.jpg",
   },
   {
     name: "Nekozumi",
+    tag: "TLS",
     img: "./nunu.png",
   },
   {
     name: "Arzok",
+    tag: "BR1",
     img: "./arzok.png",
   },
   {
-    name: "eigamen",
+    name: "bobtheconstrutor",
+    tag: "1596",
     img: "",
   },
   {
     name: "laimb meu zovo",
+    tag: "BR1",
     img: "patric.jpg",
   },
   {
     name: "Srpbl",
+    tag: "BR1",
     img: "",
   },
   {
     name: "always apleasure",
+    tag: "BR1",
     img: "./kaikan.png",
   },
   {
     name: "Nenemz",
+    tag: "3514",
     img: "./nenemz.png",
   },
   {
     name: "rasks",
+    tag: "BR1",
     img: "",
   },
 ];
 
-async function fetchSummonerByName(summonerName) {
-  const response = await fetch(`/${SUMMONER_API}/${summonerName}`);
+async function fetchSummonerByName(summonerName, tag) {
+  const response = await fetch(`/${SUMMONER_API}/${summonerName}/${tag}`);
   const data = await response.json();
   return data;
 }
 
-async function fetchSummonerLeagues(summonerName) {
-  const response = await fetch(`/${LEAGUE_API}/${summonerName}`);
+async function fetchSummonerLeagues(summonerName, tag) {
+  const response = await fetch(`/${LEAGUE_API}/${summonerName}/${tag}`);
   const data = await response.json();
   return data;
 }
 
 async function getSummonersLeagues(summoners) {
   const fetchPromises = summoners.map(async (summoner) => {
-    const leagueData = await fetchSummonerLeagues(summoner.name);
+    const leagueData = await fetchSummonerLeagues(summoner.name, summoner.tag);
     return { summoner, leagueData };
   });
 
@@ -130,14 +145,20 @@ function renderRanking(ranking) {
       const soloQueueData = summoner.leagueData.find(
         (data) => data.queueType === "RANKED_SOLO_5x5"
       );
-      if (soloQueueData) return soloQueueData;
+
+      if (soloQueueData)
+        return {
+          ...soloQueueData,
+          name: summoner.summoner.name,
+          tag: summoner.summoner.tag,
+        };
     })
     .filter(Boolean)
     .sort(comparePlayers);
 
   orderedPlayers.forEach((summoner) => {
     const player = players.find(
-      (player) => player.name === summoner.summonerName
+      (player) => player.name === summoner.name && player.tag === summoner.tag
     );
 
     const negativeClass = summoner.wins < summoner.losses ? "on" : "off";
@@ -156,7 +177,7 @@ function renderRanking(ranking) {
                 <img class="cadeiaimg ${negativeClass}" src="./grade-cadeia.png"/>
               </div>
                 <div class="content">
-                    <span>${summoner.summonerName}</span>
+                    <span>${summoner.name}#${summoner.tag}</span>
                     <div class="elo"><span class="tier ${summoner.tier}">${summoner.tier}</span>
                     <span class="rank">${summoner.rank}</span>
                     <span class="points">${summoner.leaguePoints} LP</span></div>
