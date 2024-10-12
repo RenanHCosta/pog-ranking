@@ -1,5 +1,5 @@
-import express from "express";
 import cors from "cors";
+import express from "express";
 
 const PORT = process.env.PORT || 3000;
 const server = express();
@@ -8,29 +8,47 @@ server.use(cors());
 server.use(express.static("public"));
 
 const API_KEY = "RGAPI-8ca45cc8-62f1-47b4-bd7f-79f163577d9f";
-const RIOT_BASE_API_URL = "https://br1.api.riotgames.com";
-const SUMMONER_API = "lol/summoner/v4/summoners/by-name";
+const RIOT_AMERICAS_BASE_API_URL = "https://americas.api.riotgames.com";
+const RIOT_BR1_BASE_API_URL = "https://br1.api.riotgames.com";
+const PUUID_API = "riot/account/v1/accounts/by-riot-id";
+const SUMMONER_API = "lol/summoner/v4/summoners/by-puuid";
 const LEAGUE_API = "lol/league/v4/entries/by-summoner";
 
 const leaguesCache = [];
 
-// Will most likely be deprecated in the future
-async function fetchSummonerByName(summonerName) {
+async function fetchSummonerByNameAndTag(summonerName, tag) {
   const response = await fetch(
-    `${RIOT_BASE_API_URL}/${SUMMONER_API}/${summonerName}`,
+    `${RIOT_AMERICAS_BASE_API_URL}/${PUUID_API}/${summonerName}/${tag}`,
     {
       headers: {
         "X-Riot-Token": API_KEY,
       },
     }
   );
+
+  const data = await response.json();
+  console.log(data);
+  return data;
+}
+
+// Will most likely be deprecated in the future
+async function fetchSummonerByPuuid(Puuid) {
+  const response = await fetch(
+    `${RIOT_BR1_BASE_API_URL}/${SUMMONER_API}/${Puuid}`,
+    {
+      headers: {
+        "X-Riot-Token": API_KEY,
+      },
+    }
+  );
+
   const data = await response.json();
   return data;
 }
 
 async function fetchSummonerLeagues(summonerId) {
   const response = await fetch(
-    `${RIOT_BASE_API_URL}/${LEAGUE_API}/${summonerId}`,
+    `${RIOT_BR1_BASE_API_URL}/${LEAGUE_API}/${summonerId}`,
     {
       headers: {
         "X-Riot-Token": API_KEY,
@@ -46,11 +64,14 @@ server.get("/clear-cache", async (_req, resp) => {
   resp.sendStatus(200);
 });
 
-server.get("/summoner/:name", async (req, resp) => {
+server.get("/summoner/:name/:tag", async (req, resp) => {
   const summonerName = req.params.name;
+  const tag = req.params.tag;
 
   try {
-    const summoner = await fetchSummonerByName(summonerName);
+    const { puuid } = await fetchSummonerByNameAndTag(summonerName, tag);
+
+    const summoner = await fetchSummonerByPuuid(puuid);
     resp.json(summoner);
   } catch (error) {
     console.error(`error: ${error}`);
@@ -58,8 +79,9 @@ server.get("/summoner/:name", async (req, resp) => {
   }
 });
 
-server.get("/summoner/league/:name", async (req, resp) => {
+server.get("/summoner/league/:name/:tag", async (req, resp) => {
   const summonerName = req.params.name;
+  const tag = req.params.tag;
 
   try {
     const perCache = leaguesCache.find(
@@ -70,7 +92,9 @@ server.get("/summoner/league/:name", async (req, resp) => {
       return resp.json(perCache);
     }
 
-    const { id } = await fetchSummonerByName(summonerName);
+    const { puuid } = await fetchSummonerByNameAndTag(summonerName, tag);
+
+    const { id } = await fetchSummonerByPuuid(puuid);
     const leagues = await fetchSummonerLeagues(id);
 
     if (!leagues.status) {
