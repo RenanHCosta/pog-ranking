@@ -173,7 +173,7 @@ function renderRanking(ranking) {
       (player) => player.name === summoner.name && player.tag === summoner.tag
     );
 
-    const negativeClass = summoner.wins < summoner.losses ? "on" : "off";
+    const negativeClass = summoner.wins <= summoner.losses ? "on" : "off";
 
     let playerImg = player && player.img ? player.img : "indoali.jpg";
 
